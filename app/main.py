@@ -30,9 +30,9 @@ def test(db: Session = Depends(get_db)):
 
 
 @app.get("/posts")
-def get_posts():
-
-    return {"data": " "}
+def get_posts(db: Session = Depends(get_db)):
+    posts = db.query(models.Post).all
+    return {"data": posts}
 
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
