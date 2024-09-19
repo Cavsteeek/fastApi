@@ -25,7 +25,8 @@ def root():
 
 @app.get("/sql")
 def test(db: Session = Depends(get_db)):
-    return {"message": "Success"}
+    posts = db.query(models.Post).all
+    return {"data": posts}
 
 
 @app.get("/posts")
