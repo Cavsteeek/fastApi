@@ -16,6 +16,10 @@ app = FastAPI()
 
 
 # ROUTES
+class Post(BaseModel):
+    title: str
+    content: str
+    published: bool = True
 
 
 @app.get("/")
@@ -23,22 +27,25 @@ def root():
     return {"message": "FastAPI World"}
 
 
-@app.get("/sql")
-def test(db: Session = Depends(get_db)):
-    posts = db.query(models.Post).all
-    return {"data": posts}
+# @app.get("/sql")
+# def test(db: Session = Depends(get_db)):
+#     posts = db.query(models.Post).all
+#     return {"data": posts}
 
 
 @app.get("/posts")
 def get_posts(db: Session = Depends(get_db)):
-    posts = db.query(models.Post).all
+    posts = db.query(models.Post).all()
     return {"data": posts}
 
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
-def create_post():
+def create_posts(post: Post, db: Session = Depends(get_db)):
+    new_post = models.Post(
+        title=post.title, content=post.content, published=post.published
+    )
 
-    return {"data": "new_post"}
+    return {"data": new_post}
 
 
 @app.get("/posts/{id}")
